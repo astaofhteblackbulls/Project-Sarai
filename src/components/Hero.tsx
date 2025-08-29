@@ -8,37 +8,38 @@ const Hero: React.FC = () => {
   const { t } = useTranslation();
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   // Array of Indian destination videos
   const videos = [
     {
       id: 'taj-mahal',
       title: 'Taj Mahal, Agra',
-      url: 'https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4',
+      url: '/assets/fallback-video.mp4',
       fallbackImage: 'https://images.pexels.com/photos/1583339/pexels-photo-1583339.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
     },
     {
       id: 'hawa-mahal',
       title: 'Hawa Mahal, Jaipur',
-      url: 'https://videos.pexels.com/video-files/3571265/3571265-uhd_2560_1440_30fps.mp4',
+      url: '/assets/fallback-video.mp4',
       fallbackImage: 'https://images.pexels.com/photos/3581368/pexels-photo-3581368.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
     },
     {
       id: 'kerala',
       title: 'Kerala Backwaters',
-      url: 'https://videos.pexels.com/video-files/3571266/3571266-uhd_2560_1440_30fps.mp4',
+      url: '/assets/fallback-video.mp4',
       fallbackImage: 'https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
     },
     {
       id: 'goa',
       title: 'Goa Beaches',
-      url: 'https://videos.pexels.com/video-files/3571267/3571267-uhd_2560_1440_30fps.mp4',
+      url: '/assets/fallback-video.mp4',
       fallbackImage: 'https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
     },
     {
       id: 'ladakh',
       title: 'Ladakh Mountains',
-      url: 'https://videos.pexels.com/video-files/3571268/3571268-uhd_2560_1440_30fps.mp4',
+      url: '/assets/fallback-video.mp4',
       fallbackImage: 'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
     }
   ];
@@ -50,6 +51,7 @@ const Hero: React.FC = () => {
       console.log('Hero: video rotation interval triggered');
       setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
       setIsVideoLoaded(false);
+      setVideoError(false);
     }, 6000);
 
     return () => {
@@ -65,28 +67,40 @@ const Hero: React.FC = () => {
       {/* Video Background */}
       <div className="absolute inset-0">
         {/* Video Element */}
-        <video
-          key={currentVideo.id}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            isVideoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          onLoadedData={() => setIsVideoLoaded(true)}
-          onError={() => setIsVideoLoaded(false)}
-        >
-          <source src={currentVideo.url} type="video/mp4" />
-        </video>
+        {!videoError && (
+          <video
+            key={currentVideo.id}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              isVideoLoaded && !videoError ? 'opacity-100' : 'opacity-0'
+            }`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            onLoadedData={() => {
+              setIsVideoLoaded(true);
+              setVideoError(false);
+            }}
+            onError={() => {
+              setVideoError(true);
+              setIsVideoLoaded(false);
+            }}
+          >
+            <source src={currentVideo.url} type="video/mp4" />
+          </video>
+        )}
 
         {/* Fallback Background Image */}
         <div
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
-            isVideoLoaded ? 'opacity-0' : 'opacity-100'
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+            isVideoLoaded && !videoError ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
             backgroundImage: `url('${currentVideo.fallbackImage}')`,
+          }}
+          onError={(e) => {
+            // If image also fails, use a solid gradient background
+            (e.target as HTMLElement).style.backgroundImage = 'linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%)';
           }}
         />
 

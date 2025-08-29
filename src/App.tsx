@@ -85,7 +85,7 @@ function App() {
         onUserLogout={handleUserLogout}
         onShowProfile={() => setShowUserProfile(true)}
       />
-      <div className="pt-header md:pt-header-lg pb-nav md:pb-0"> {/* Add padding to avoid overlap with navigation */}
+      <div className="pb-nav md:pb-0"> {/* Remove top padding to allow transparent navbar */}
         <Routes>
           <Route path="/" element={
             <>

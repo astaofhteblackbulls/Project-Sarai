@@ -56,7 +56,7 @@ const Navigation: React.FC<NavigationProps> = ({
     console.log('Navigation: scroll useEffect triggered');
     const handleScroll = () => {
       console.log('Navigation: handleScroll triggered', { scrollY: window.scrollY });
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -74,14 +74,20 @@ const Navigation: React.FC<NavigationProps> = ({
   return (
     <>
       {/* Desktop Navigation - Hidden on mobile */}
-      <nav className="hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/95 backdrop-blur-md shadow-lg">
+      <nav className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+          : 'bg-transparent'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <div className="text-2xl font-bold text-gray-800">
+              <div className={`text-2xl font-bold transition-colors duration-300 ${
+                isScrolled ? 'text-gray-800' : 'text-white'
+              }`}>
                 <span className="text-orange-500">Incredible</span>
-                <span className="text-blue-600"> India</span>
+                <span className={isScrolled ? 'text-blue-600' : 'text-white'}> India</span>
               </div>
             </div>
 
@@ -91,10 +97,10 @@ const Navigation: React.FC<NavigationProps> = ({
                 <Link
                   key={item.id}
                   to={item.id === 'home' ? '/' : `/${item.id.replace(' ', '-')}`}
-                  className={`font-medium transition-all duration-200 hover:scale-105 ${
+                  className={`font-medium transition-all duration-300 hover:scale-105 ${
                     location.pathname === (item.id === 'home' ? '/' : `/${item.id.replace(' ', '-')}`)
                       ? 'text-orange-500'
-                      : 'text-gray-700 hover:text-orange-500'
+                      : `${isScrolled ? 'text-gray-700' : 'text-white'} hover:text-orange-500`
                   }`}
                 >
                   {item.label}
@@ -108,7 +114,11 @@ const Navigation: React.FC<NavigationProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-all text-gray-700 hover:bg-gray-100"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all ${
+                    isScrolled 
+                      ? 'text-gray-700 hover:bg-gray-100' 
+                      : 'text-white hover:bg-white/10'
+                  }`}
                 >
                   <Globe className="w-4 h-4" />
                   <span className="text-sm font-medium">
@@ -147,7 +157,11 @@ const Navigation: React.FC<NavigationProps> = ({
                 <div className="relative">
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-all text-gray-700 hover:bg-gray-100"
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
+                      isScrolled 
+                        ? 'text-gray-700 hover:bg-gray-100' 
+                        : 'text-white hover:bg-white/10'
+                    }`}
                   >
                     <User className="w-4 h-4" />
                     <span className="text-sm font-medium">
@@ -192,7 +206,11 @@ const Navigation: React.FC<NavigationProps> = ({
               ) : (
                 <button
                   onClick={onShowAuth}
-                  className="px-4 py-2 rounded-lg font-medium transition-all bg-orange-500 hover:bg-orange-600 text-white"
+                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    isScrolled 
+                      ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/30'
+                  }`}
                 >
                   Sign In
                 </button>
@@ -201,7 +219,11 @@ const Navigation: React.FC<NavigationProps> = ({
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
+                className={`lg:hidden p-2 rounded-lg transition-colors ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:bg-gray-100' 
+                    : 'text-white hover:bg-white/10'
+                }`}
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -210,7 +232,9 @@ const Navigation: React.FC<NavigationProps> = ({
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden bg-white border-t">
+            <div className={`lg:hidden border-t transition-colors duration-300 ${
+              isScrolled ? 'bg-white' : 'bg-black/20 backdrop-blur-md'
+            }`}>
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navItems.map((item) => (
                   <Link
@@ -219,7 +243,7 @@ const Navigation: React.FC<NavigationProps> = ({
                     className={`block px-3 py-2 rounded-lg transition-colors ${
                       location.pathname === (item.id === 'home' ? '/' : `/${item.id.replace(' ', '-')}`)
                         ? 'text-orange-500 bg-orange-50'
-                        : 'text-gray-700 hover:text-orange-500 hover:bg-gray-50'
+                        : `${isScrolled ? 'text-gray-700 hover:bg-gray-50' : 'text-white hover:bg-white/10'} hover:text-orange-500`
                     }`}
                   >
                     {item.label}

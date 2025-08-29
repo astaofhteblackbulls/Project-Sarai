@@ -5,9 +5,9 @@ const AboutIndia: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-white pt-20">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-r from-blue-900 to-indigo-900 text-white flex items-center justify-center">
+      <section className="relative min-h-screen bg-gradient-to-r from-blue-900 to-indigo-900 text-white flex items-center justify-center pt-16 md:pt-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6">
