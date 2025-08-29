@@ -7,6 +7,7 @@ import type { Destination } from '../api/destinations';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../context/TranslationContext';
+import { handleImageError, getOptimizedPexelsUrl } from '../utils/imageUtils';
 
 const defaultDestinations: Destination[] = [];
 
@@ -352,7 +353,7 @@ const Destinations: React.FC<DestinationsProps> = ({ onVRExperience }) => {
         </div>
 
         {/* Destinations Grid */}
-        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {isLoading ? (
             // Show skeleton loaders while loading
             Array.from({ length: 6 }).map((_, index) => (
@@ -375,9 +376,11 @@ const Destinations: React.FC<DestinationsProps> = ({ onVRExperience }) => {
                 {/* Image Container */}
                 <div className="relative h-40 sm:h-48 md:h-64 overflow-hidden">
                   <img
-                    src={destination.image}
+                    src={getOptimizedPexelsUrl(destination.image)}
                     alt={destination.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                    onError={handleImageError}
                   />
                   
                   {/* Gradient Overlay */}
